@@ -121,6 +121,14 @@ def getSolutions (path_prefix, path_proxy):
     print "Done !!!"
     return mysublist
 
+def getExt(ext):
+    X={"C99":"c", "C":"c", "C++":"cpp", "PYT":"py", "BAS":"sh", "AWK":"awk", "ASM":"asm", "BF":"bf", "TEX":"txt", "PAS":"pas"}
+    try:
+        return X[ext]
+    except:
+        return ext
+    
+
 def downloadSolutions(mysublist):
     totalsubmissions = len(mysublist)
     
@@ -128,8 +136,8 @@ def downloadSolutions(mysublist):
     progress = 0
     
     for entry in mysublist:
-        existing_files = glob.glob(os.path.join(path_prefix, "%s-%s*" % \
-                                                           (entry[3],entry[1])))
+        existing_files = glob.glob(os.path.join(path_prefix, "%s-%s-%s*" % \
+                                                           (entry[3],entry[4], entry[1])))
 
         progress += 1
         if len(existing_files) == 1:
@@ -138,12 +146,8 @@ def downloadSolutions(mysublist):
             source_code = br.open("http://www.spoj.com/files/src/save/" + \
                                                                        entry[1])
             header = dict(source_code.info())
-            filename = ""
-            try:
-                filename = header['content-disposition'].split('=')[1]
-                filename = entry[3] + "-" + filename
-            except:
-                filename = entry[3] + "-" + entry[1]
+            filename = "-".join([entry[3],entry[4], entry[1]])
+            filename = filename + "." + getExt(entry[7])
                 
             fp = open( os.path.join(path_prefix, filename), "w")
             fp.write (source_code.read())
