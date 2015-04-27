@@ -75,7 +75,10 @@ def getSolutions (path_prefix, path_proxy):
     # authenticate the user
     print "Authenticating " + username
     br.open ("http://spoj.com")
-    br.select_form (name="login")
+    for form in br.forms():
+        if form.attrs['id'] == 'login-form':
+            br.form = form
+            break
     br["login_user"] = username
     br["password"] = password
 
